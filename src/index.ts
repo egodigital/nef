@@ -80,6 +80,13 @@ const IMPORT_MANYS = Symbol('IMPORT_MANYS');  // key for string @ImportMany() de
 const VALUE_NOT_CREATED = Symbol('VALUE_NOT_CREATED');
 
 
+/**
+ * Marks a class as exportable.
+ *
+ * @param {ServiceKey} [key] The custom service key. Default: class
+ * 
+ * @return {any} The decorator function.
+ */
 export function Export(key?: ServiceKey): ClassDecorator;
 export function Export(...args: any[]): any {
     return (target: Function) => {
@@ -104,6 +111,13 @@ export function Export(...args: any[]): any {
     };
 }
 
+/**
+ * Marks a property to load an exported service.
+ *
+ * @param {ServiceKey} service The service key.
+ * 
+ * @return {any} The decorator function.
+ */
 export function Import(service: ServiceKey): any;
 export function Import(...args: any[]): any {
     return function (target: any, key: PropertyKey) {
@@ -122,6 +136,13 @@ export function Import(...args: any[]): any {
     };
 }
 
+/**
+ * Marks a property to load an exported services.
+ *
+ * @param {ServiceKey} service The service key.
+ * 
+ * @return {any} The decorator function.
+ */
 export function ImportMany(service: ServiceKey): any;
 export function ImportMany(...args: any[]): any {
     return function (target: any, key: PropertyKey) {
@@ -213,7 +234,9 @@ export class CompositionContainer {
             this.fillInstances(instances, LOADED_CLASSES);
 
             this._instances = instances;
-            this.handleInstanceList(instances);
+            this.handleInstanceList(
+                instances.map(i => i.instance)
+            );
         } else {
             instances = this._instances as ExportInstance[];
         }
