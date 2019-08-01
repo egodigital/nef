@@ -353,5 +353,6 @@ export class CompositionContainer {
 
 
 export * from './catalogs/ClassCatalog';
+export * from './catalogs/DirectoryCatalog';
 export * from './catalogs/FileCatalog';
 export * from './catalogs/ModuleCatalog';

@@ -69,6 +69,22 @@ function getClassesFromObjectInner(obj: any, alreadyHandled: any[]): any[] {
 }
 
 /**
+ * Converts a value to a boolean, if needed.
+ *
+ * @param {any} val The input value.
+ * @param {boolean} [defaultValue] The custom default value.
+ *
+ * @return {string} The output value.
+ */
+export function toBooleanSafe(val: any, defaultValue: boolean = false): boolean {
+    if (_.isNil(val)) {
+        return !!defaultValue;
+    }
+
+    return !!val;
+}
+
+/**
  * Converts a value to a string, if needed, that is not (null) and (undefined).
  *
  * @param {any} val The input value.
