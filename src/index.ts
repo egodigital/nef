@@ -17,6 +17,7 @@
 
 import * as _ from 'lodash';
 import { ClassCatalog } from './catalogs/ClassCatalog';
+import { ModuleCatalog } from './catalogs/ModuleCatalog';
 import { asArray } from './util';
 
 
@@ -155,27 +156,37 @@ export class CompositionContainer {
      * @return {this}
      */
     public addCatalogs(...catalogs: ComposablePartCatalog[]): this {
-        if (catalogs) {
-            catalogs.forEach(c => {
-                if (c) {
-                    this._CATALOGS.push(c);
-                }
-            });
-        }
+        catalogs.filter(c => !_.isNil(c)).forEach(c => {
+            this._CATALOGS.push(c);
+        });
 
         return this;
     }
 
     /**
-     * Adds a class (catalog).
+     * Adds one or more class (catalogs).
      *
-     * @param {any} cls The class to add.
+     * @param {any[]} [classes] The classes to add.
      *
      * @return {this}
      */
     public addClasses(...classes: any[]): this {
         return this.addCatalogs
-            .apply(this, classes.map(c => new ClassCatalog(c)));
+            .apply(this, classes.filter(c => !_.isNil(c))
+                .map(c => new ClassCatalog(c)));
+    }
+
+    /**
+     * Adds one or more module (catalogs).
+     *
+     * @param {any[]} [mods] The modules to add.
+     *
+     * @return {this}
+     */
+    public addModules(...mods: any[]): this {
+        return this.addCatalogs
+            .apply(this, mods.filter(m => !_.isNil(m))
+                .map(m => new ModuleCatalog(m)));
     }
 
     /**
@@ -319,3 +330,4 @@ export class CompositionContainer {
 
 
 export * from './catalogs/ClassCatalog';
+export * from './catalogs/ModuleCatalog';

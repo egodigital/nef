@@ -21,22 +21,22 @@ import { ComposablePartCatalog } from '../index';
 /**
  * A catalog for a single class.
  */
-export class ClassCatalog implements ComposablePartCatalog {
-    private readonly _CLASS: Function;
+export class ModuleCatalog implements ComposablePartCatalog {
+    private readonly _MODULE: any;
 
     /**
      * Initializes a new instance of that class.
      *
-     * @param {any} cls The class.
+     * @param {any} mod The mod.
      * 
-     * @throws {Error} 'cls' is no constructor.
+     * @throws {Error} 'mod' is (null) or (undefined).
      */
-    public constructor(cls: any) {
-        if (!_.isFunction(cls) || !_.isFunction(cls.constructor)) {
-            throw new Error('cls must be a constructor function');
+    public constructor(mod: any) {
+        if (_.isNil(mod)) {
+            throw new Error('cls must not be null and undfined');
         }
 
-        this._CLASS = cls;
+        this._MODULE = mod;
     }
 
     /** @inheritdoc */
@@ -46,6 +46,14 @@ export class ClassCatalog implements ComposablePartCatalog {
 
     /** @inheritdoc */
     public getClassesSync(): any[] {
-        return [this._CLASS];
+        const CLASS_LIST: any[] = [];
+        for (const PROP in this._MODULE) {
+            const VALUE: any = this._MODULE[PROP];
+            if (_.isFunction(VALUE) && _.isFunction(VALUE.constructor)) {
+                CLASS_LIST.push(VALUE);
+            }
+        }
+
+        return CLASS_LIST;
     }
 }
