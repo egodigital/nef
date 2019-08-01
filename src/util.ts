@@ -31,3 +31,64 @@ export function asArray<T>(val: T | T[]): T[] {
 
     return val.filter(i => !_.isNil(i));
 }
+
+/**
+ * Returns classes of an object deep.
+ *
+ * @param {any} obj The object.
+ * 
+ * @return {any[]} The list of classes.
+ */
+export function getClassesFromObject(obj: any): any[] {
+    return getClassesFromObjectInner(obj, []);
+}
+
+function getClassesFromObjectInner(obj: any, alreadyHandled: any[]): any[] {
+    if (_.isNil(obj)) {
+        return;
+    }
+    if (alreadyHandled.some(x => x === obj)) {
+        return;
+    }
+
+    alreadyHandled.push(obj);
+
+    const CLASS_LIST: any[] = [];
+    for (const PROP in obj) {
+        const VALUE: any = obj[PROP];
+
+        if (_.isFunction(VALUE) && _.isFunction(VALUE.constructor)) {
+            CLASS_LIST.push(VALUE);
+        } else {
+            CLASS_LIST.push
+                .apply(CLASS_LIST, getClassesFromObjectInner(VALUE, alreadyHandled));
+        }
+    }
+
+    return CLASS_LIST;
+}
+
+/**
+ * Converts a value to a string, if needed, that is not (null) and (undefined).
+ *
+ * @param {any} val The input value.
+ *
+ * @return {string} The output value.
+ */
+export function toStringSafe(val: any): string {
+    if (_.isString(val)) {
+        return val;
+    }
+
+    if (_.isNil(val)) {
+        return '';
+    }
+
+    if (_.isFunction(val['toString'])) {
+        return String(
+            val.toString()
+        );
+    }
+
+    return String(val);
+}

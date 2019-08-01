@@ -17,6 +17,7 @@
 
 import * as _ from 'lodash';
 import { ComposablePartCatalog } from '../index';
+import { getClassesFromObject } from '../util';
 
 /**
  * A catalog for a single class.
@@ -46,14 +47,6 @@ export class ModuleCatalog implements ComposablePartCatalog {
 
     /** @inheritdoc */
     public getClassesSync(): any[] {
-        const CLASS_LIST: any[] = [];
-        for (const PROP in this._MODULE) {
-            const VALUE: any = this._MODULE[PROP];
-            if (_.isFunction(VALUE) && _.isFunction(VALUE.constructor)) {
-                CLASS_LIST.push(VALUE);
-            }
-        }
-
-        return CLASS_LIST;
+        return getClassesFromObject(this._MODULE);
     }
 }

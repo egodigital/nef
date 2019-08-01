@@ -353,4 +353,5 @@ export class CompositionContainer {
 
 
 export * from './catalogs/ClassCatalog';
+export * from './catalogs/FileCatalog';
 export * from './catalogs/ModuleCatalog';
