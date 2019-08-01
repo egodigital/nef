@@ -1,0 +1,9 @@
+{
+    "extends": "@egodigital/tsconfig",
+    "compilerOptions": {
+        "outDir": "lib"
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

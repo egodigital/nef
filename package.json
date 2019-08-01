@@ -1,0 +1,51 @@
+{
+  "name": "@egodigital/nef",
+  "version": "0.1.0",
+  "description": "Managed Extensibility Framework written for Node.js",
+  "main": "lib/index.js",
+  "private": false,
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "(rm -r ./lib || true) && (tsc && tsc -d)",
+    "build_and_test": "npm run build && npm run test",
+    "deploy": "npm install && npm audit fix && npm run build_and_test && npm publish",
+    "doc": "(rm -r ./doc || true) && (typedoc --out ./doc ./src)",
+    "sandbox": "npm run build && node ./lib/sandbox.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/egodigital/nef.git"
+  },
+  "keywords": [
+    "node",
+    "classes",
+    "mef",
+    "node",
+    "extensibility",
+    "framework",
+    "service",
+    "typescript",
+    "decorator",
+    "contract"
+  ],
+  "author": "e.GO Digital GmbH, Aachen, Germany",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/egodigital/nef/issues"
+  },
+  "homepage": "https://github.com/egodigital/nef#readme",
+  "dependencies": {
+    "@types/node": "^10.14.12",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "@egodigital/tsconfig": "^1.2.0",
+    "@types/lodash": "^4.14.136",
+    "tslint": "^5.18.0",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.5.3"
+  }
+}
