@@ -18,7 +18,7 @@
 import * as _ from 'lodash';
 import * as fastGlob from 'fast-glob';
 import * as path from 'path';
-import { ComposablePartCatalog } from '../index';
+import { CatalogBase } from './CatalogBase';
 import { asArray, getClassesFromObject, loadModule, toStringSafe } from '../util';
 
 /**
@@ -42,7 +42,7 @@ export interface DirectoryCatalogOptions {
 /**
  * A catalog based on one or more JavaScript modules in a directory.
  */
-export class DirectoryCatalog implements ComposablePartCatalog {
+export class DirectoryCatalog extends CatalogBase {
     /**
      * Initializes a new instance of that class.
      *
@@ -53,6 +53,8 @@ export class DirectoryCatalog implements ComposablePartCatalog {
         public readonly directory: string,
         public readonly options?: DirectoryCatalogOptions,
     ) {
+        super();
+
         this.directory = toStringSafe(directory);
 
         if (_.isNil(this.options)) {

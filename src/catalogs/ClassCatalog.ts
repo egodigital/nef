@@ -16,12 +16,12 @@
  */
 
 import * as _ from 'lodash';
-import { ComposablePartCatalog } from '../index';
+import { CatalogBase } from './CatalogBase';
 
 /**
  * A catalog for a single class.
  */
-export class ClassCatalog implements ComposablePartCatalog {
+export class ClassCatalog extends CatalogBase {
     private readonly _CLASS: Function;
 
     /**
@@ -32,16 +32,13 @@ export class ClassCatalog implements ComposablePartCatalog {
      * @throws {Error} 'cls' is no constructor.
      */
     public constructor(cls: any) {
+        super();
+
         if (!_.isFunction(cls) || !_.isFunction(cls.constructor)) {
             throw new Error('cls must be a constructor function');
         }
 
         this._CLASS = cls;
-    }
-
-    /** @inheritdoc */
-    public async getClasses(): Promise<any[]> {
-        return this.getClassesSync();
     }
 
     /** @inheritdoc */

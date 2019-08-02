@@ -16,34 +16,17 @@
  */
 
 import * as _ from 'lodash';
-import { CatalogBase } from './CatalogBase';
-import { getClassesFromObject } from '../util';
+import { ComposablePartCatalog } from '../index';
 
 /**
- * A catalog for a single class.
+ * A basic catalog.
  */
-export class ModuleCatalog extends CatalogBase {
-    private readonly _MODULE: any;
-
-    /**
-     * Initializes a new instance of that class.
-     *
-     * @param {any} mod The mod.
-     * 
-     * @throws {Error} 'mod' is (null) or (undefined).
-     */
-    public constructor(mod: any) {
-        super();
-
-        if (_.isNil(mod)) {
-            throw new Error('cls must not be null and undfined');
-        }
-
-        this._MODULE = mod;
+export abstract class CatalogBase implements ComposablePartCatalog {
+    /** @inheritdoc */
+    public async getClasses(): Promise<any[]> {
+        return this.getClassesSync();
     }
 
     /** @inheritdoc */
-    public getClassesSync(): any[] {
-        return getClassesFromObject(this._MODULE);
-    }
+    public abstract getClassesSync(): any[];
 }

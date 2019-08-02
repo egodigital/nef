@@ -17,7 +17,7 @@
 
 import * as _ from 'lodash';
 import * as path from 'path';
-import { ComposablePartCatalog } from '../index';
+import { CatalogBase } from './CatalogBase';
 import { getClassesFromObject, loadModule, toStringSafe } from '../util';
 
 /**
@@ -33,7 +33,7 @@ export interface FileCatalogOptions {
 /**
  * A catalog based on a JavaScript module in a file.
  */
-export class FileCatalog implements ComposablePartCatalog {
+export class FileCatalog extends CatalogBase {
     /**
      * Initializes a new instance of that class.
      *
@@ -44,6 +44,8 @@ export class FileCatalog implements ComposablePartCatalog {
         public readonly file: string,
         public readonly options?: FileCatalogOptions,
     ) {
+        super();
+
         this.file = toStringSafe(file);
 
         if (_.isNil(this.options)) {
@@ -67,11 +69,6 @@ export class FileCatalog implements ComposablePartCatalog {
             );
         }
         this.file = path.resolve(this.file);
-    }
-
-    /** @inheritdoc */
-    public async getClasses(): Promise<any[]> {
-        return this.getClassesSync();
     }
 
     /** @inheritdoc */
