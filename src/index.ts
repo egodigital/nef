@@ -218,7 +218,7 @@ export class CompositionContainer {
     public async compose(obj: any): Promise<void> {
         // keep sure we already have an
         // initialized value in 'this._instances'
-        await this.getExportInstances();
+        await this.getGlobalExportInstances();
 
         this.handleImports(obj);
         this.handleImportManys(obj);
@@ -234,7 +234,7 @@ export class CompositionContainer {
     public composeSync(obj: any): this {
         // keep sure we already have an
         // initialized value in 'this._instances'
-        this.getExportInstancesSync();
+        this.getGlobalExportInstancesSync();
 
         this.handleImports(obj);
         this.handleImportManys(obj);
@@ -272,7 +272,43 @@ export class CompositionContainer {
         });
     }
 
-    private async getExportInstances(): Promise<ExportInstance[]> {
+    /**
+     * Returns all services by key.
+     *
+     * @param {ServiceKey} service The service key.
+     *
+     * @return {Promise<TService[]>} The promise with the services.
+     */
+    public async getAllServices<TService = any>(service: ServiceKey): Promise<TService[]> {
+        await this.getGlobalExportInstances();
+
+        return this.getAllServicesInner(service);
+    }
+
+    /**
+     * Returns all services by key.
+     *
+     * @param {ServiceKey} service The service key.
+     *
+     * @return {TService[]} The services.
+     */
+    public getAllServicesSync<TService = any>(service: ServiceKey): TService[] {
+        this.getGlobalExportInstancesSync();
+
+        return this.getAllServicesInner(service);
+    }
+
+    private getAllServicesInner(service: ServiceKey): any[] {
+        const MATCHING_EXPORTS: ExportInstance[] = [];
+        this.fillMatchingExports({
+            property: null,
+            service: service,
+        }, MATCHING_EXPORTS);
+
+        return MATCHING_EXPORTS.map(me => me.instance);
+    }
+
+    private async getGlobalExportInstances(): Promise<ExportInstance[]> {
         let instances: ExportInstance[];
         if (_.isSymbol(this._instances)) {
             // load classes from catalogs
@@ -301,7 +337,7 @@ export class CompositionContainer {
         return instances;
     }
 
-    private getExportInstancesSync(): ExportInstance[] {
+    private getGlobalExportInstancesSync(): ExportInstance[] {
         let instances: ExportInstance[];
         if (_.isSymbol(this._instances)) {
             // load classes from catalogs
@@ -330,21 +366,54 @@ export class CompositionContainer {
         return instances;
     }
 
+    /**
+     * Returns a single service by key.
+     *
+     * @param {ServiceKey} service The service key.
+     *
+     * @return {Promise<TService>} The promise with the single service.
+     */
+    public async getService<TService = any>(service: ServiceKey): Promise<TService> {
+        await this.getGlobalExportInstances();
+
+        return this.getServiceInner(service);
+    }
+
+    /**
+     * Returns a single service by key.
+     *
+     * @param {ServiceKey} service The service key.
+     *
+     * @return {TService} The single service.
+     */
+    public getServiceSync<TService = any>(service: ServiceKey): TService {
+        this.getGlobalExportInstancesSync();
+
+        return this.getServiceInner(service);
+    }
+
+    private getServiceInner(service: ServiceKey): any {
+        const MATCHING_EXPORTS: ExportInstance[] = [];
+        this.fillMatchingExports({
+            property: null,
+            service: service,
+        }, MATCHING_EXPORTS);
+
+        if (MATCHING_EXPORTS.length < 1) {
+            throw new Error(`No exported instance found for '${toStringSafe(service)}'`);
+        }
+        if (MATCHING_EXPORTS.length > 1) {
+            throw new Error(`More than one exported instance found for '${toStringSafe(service)}'`);
+        }
+
+        return MATCHING_EXPORTS[0].instance;
+    }
+
     private handleImports(obj: any) {
         const IMPORT_DEFS = asArray<ImportDefintion>(obj[IMPORTS]);
 
         IMPORT_DEFS.forEach(id => {
-            const MATCHING_EXPORTS: ExportInstance[] = [];
-            this.fillMatchingExports(id, MATCHING_EXPORTS);
-
-            if (MATCHING_EXPORTS.length < 1) {
-                throw new Error(`No exported instance found for '${toStringSafe(id.service)}'`);
-            }
-            if (MATCHING_EXPORTS.length > 1) {
-                throw new Error(`More than one exported instance found for '${toStringSafe(id.service)}'`);
-            }
-
-            obj[id.property] = MATCHING_EXPORTS[0].instance;
+            obj[id.property] = this.getServiceInner(id.service);
         });
     }
 
@@ -352,12 +421,7 @@ export class CompositionContainer {
         const IMPORT_DEFS = asArray<ImportDefintion>(obj[IMPORT_MANYS]);
 
         IMPORT_DEFS.forEach(id => {
-            const MATCHING_EXPORTS: ExportInstance[] = [];
-            this.fillMatchingExports(id, MATCHING_EXPORTS);
-
-            obj[id.property] = MATCHING_EXPORTS.map(me => {
-                return me.instance;
-            });
+            obj[id.property] = this.getAllServicesInner(id.service);
         });
     }
 
