@@ -69,6 +69,28 @@ function getClassesFromObjectInner(obj: any, alreadyHandled: any[]): any[] {
 }
 
 /**
+ * Loads a module.
+ *
+ * @param {string} file The path to the module. 
+ * @param {boolean} [useCache] Use cache or not.
+ * 
+ * @return {TModule} The module.
+ */
+export function loadModule<TModule = any>(
+    file: string, useCache = false,
+): TModule {
+    file = require.resolve(
+        toStringSafe(file)
+    );
+
+    if (!useCache) {
+        delete require.cache[file];
+    }
+
+    return require(file);
+}
+
+/**
  * Converts a value to a boolean, if needed.
  *
  * @param {any} val The input value.
@@ -98,6 +120,10 @@ export function toStringSafe(val: any): string {
 
     if (_.isNil(val)) {
         return '';
+    }
+
+    if (_.isFunction(val)) {
+        return val.name;
     }
 
     if (_.isFunction(val['toString'])) {

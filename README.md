@@ -2,4 +2,4 @@
 
 # NEF (Node.js Extensibility Framework)
 
-[Managed Extensibility Framework](https://docs.microsoft.com/en-us/dotnet/framework/mef/) like library written for [Node.js 10+](https://nodejs.org/).
+[Managed Extensibility Framework](https://docs.microsoft.com/en-us/dotnet/framework/mef/) like library written for [Node.js 10+](https://nodejs.org/), in [TypeScript](https://www.typescriptlang.org/).

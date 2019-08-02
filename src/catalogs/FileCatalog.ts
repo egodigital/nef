@@ -18,7 +18,7 @@
 import * as _ from 'lodash';
 import * as path from 'path';
 import { ComposablePartCatalog } from '../index';
-import { getClassesFromObject, toStringSafe } from '../util';
+import { getClassesFromObject, loadModule, toStringSafe } from '../util';
 
 /**
  * Options for 'FileCatalog' class.
@@ -77,9 +77,7 @@ export class FileCatalog implements ComposablePartCatalog {
     /** @inheritdoc */
     public getClassesSync(): any[] {
         return getClassesFromObject(
-            require(
-                require.resolve(this.file)
-            )
+            loadModule(this.file, true)
         );
     }
 }

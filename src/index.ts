@@ -18,7 +18,7 @@
 import * as _ from 'lodash';
 import { ClassCatalog } from './catalogs/ClassCatalog';
 import { ModuleCatalog } from './catalogs/ModuleCatalog';
-import { asArray } from './util';
+import { asArray, toStringSafe } from './util';
 
 
 /**
@@ -216,30 +216,9 @@ export class CompositionContainer {
      * @param {any} obj The object, where to write the instances to.
      */
     public async compose(obj: any): Promise<void> {
-        let instances: ExportInstance[];
-        if (_.isSymbol(this._instances)) {
-            // load classes from catalogs
-            const LOADED_CLASSES: any[] = [];
-            for (const CAT of this._CATALOGS) {
-                const CLASSES = asArray(await CAT.getClasses());
-
-                CLASSES.forEach(cls => {
-                    if (_.isFunction(cls.constructor)) {
-                        LOADED_CLASSES.push(cls);
-                    }
-                });
-            }
-
-            instances = [];
-            this.fillInstances(instances, LOADED_CLASSES);
-
-            this._instances = instances;
-            this.handleInstanceList(
-                instances.map(i => i.instance)
-            );
-        } else {
-            instances = this._instances as ExportInstance[];
-        }
+        // keep sure we already have an
+        // initialized value in 'this._instances'
+        await this.getExportInstances();
 
         this.handleImports(obj);
         this.handleImportManys(obj);
@@ -253,28 +232,9 @@ export class CompositionContainer {
      * @return {this}
      */
     public composeSync(obj: any): this {
-        let instances: ExportInstance[];
-        if (_.isSymbol(this._instances)) {
-            // load classes from catalogs
-            const LOADED_CLASSES: any[] = [];
-            for (const CAT of this._CATALOGS) {
-                const CLASSES = asArray(CAT.getClassesSync());
-
-                CLASSES.forEach(cls => {
-                    if (_.isFunction(cls.constructor)) {
-                        LOADED_CLASSES.push(cls);
-                    }
-                });
-            }
-
-            instances = [];
-            this.fillInstances(instances, LOADED_CLASSES);
-
-            this._instances = instances;
-            this.handleInstanceList(instances);
-        } else {
-            instances = this._instances as ExportInstance[];
-        }
+        // keep sure we already have an
+        // initialized value in 'this._instances'
+        this.getExportInstancesSync();
 
         this.handleImports(obj);
         this.handleImportManys(obj);
@@ -312,6 +272,64 @@ export class CompositionContainer {
         });
     }
 
+    private async getExportInstances(): Promise<ExportInstance[]> {
+        let instances: ExportInstance[];
+        if (_.isSymbol(this._instances)) {
+            // load classes from catalogs
+            const LOADED_CLASSES: any[] = [];
+            for (const CAT of this._CATALOGS) {
+                const CLASSES = asArray(await CAT.getClasses());
+
+                CLASSES.forEach(cls => {
+                    if (_.isFunction(cls.constructor)) {
+                        LOADED_CLASSES.push(cls);
+                    }
+                });
+            }
+
+            instances = [];
+            this.fillInstances(instances, LOADED_CLASSES);
+
+            this._instances = instances;
+            this.handleInstanceList(
+                instances.map(ei => ei.instance)
+            );
+        } else {
+            instances = this._instances as ExportInstance[];
+        }
+
+        return instances;
+    }
+
+    private getExportInstancesSync(): ExportInstance[] {
+        let instances: ExportInstance[];
+        if (_.isSymbol(this._instances)) {
+            // load classes from catalogs
+            const LOADED_CLASSES: any[] = [];
+            for (const CAT of this._CATALOGS) {
+                const CLASSES = asArray(CAT.getClassesSync());
+
+                CLASSES.forEach(cls => {
+                    if (_.isFunction(cls.constructor)) {
+                        LOADED_CLASSES.push(cls);
+                    }
+                });
+            }
+
+            instances = [];
+            this.fillInstances(instances, LOADED_CLASSES);
+
+            this._instances = instances;
+            this.handleInstanceList(
+                instances.map(ei => ei.instance)
+            );
+        } else {
+            instances = this._instances as ExportInstance[];
+        }
+
+        return instances;
+    }
+
     private handleImports(obj: any) {
         const IMPORT_DEFS = asArray<ImportDefintion>(obj[IMPORTS]);
 
@@ -320,10 +338,10 @@ export class CompositionContainer {
             this.fillMatchingExports(id, MATCHING_EXPORTS);
 
             if (MATCHING_EXPORTS.length < 1) {
-                throw new Error(`No exported instance found for '${id.service}'`);
+                throw new Error(`No exported instance found for '${toStringSafe(id.service)}'`);
             }
             if (MATCHING_EXPORTS.length > 1) {
-                throw new Error(`More than one exported instance found for '${id.service}'`);
+                throw new Error(`More than one exported instance found for '${toStringSafe(id.service)}'`);
             }
 
             obj[id.property] = MATCHING_EXPORTS[0].instance;

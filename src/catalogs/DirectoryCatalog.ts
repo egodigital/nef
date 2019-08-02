@@ -19,7 +19,7 @@ import * as _ from 'lodash';
 import * as fastGlob from 'fast-glob';
 import * as path from 'path';
 import { ComposablePartCatalog } from '../index';
-import { asArray, getClassesFromObject, toStringSafe } from '../util';
+import { asArray, getClassesFromObject, loadModule, toStringSafe } from '../util';
 
 /**
  * Options for 'DirectoryCatalog' class.
@@ -128,13 +128,12 @@ export class DirectoryCatalog implements ComposablePartCatalog {
         const CLASS_LIST: any[] = [];
 
         files.forEach(f => {
-            const MODULE: any = require(
-                require.resolve(
-                    path.join(
-                        path.dirname(f),
-                        path.basename(f, path.extname(f)),
-                    )
-                )
+            const MODULE = loadModule(
+                path.join(
+                    path.dirname(f),
+                    path.basename(f, path.extname(f)),
+                ),
+                true
             );
 
             CLASS_LIST.push.apply(
