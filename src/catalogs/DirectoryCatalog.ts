@@ -34,7 +34,7 @@ export interface DirectoryCatalogOptions {
      */
     exclude?: string | string[];
     /**
-     * One or more patterns. Default: *.js / *.ts
+     * One or more patterns. Default: *.js or *.ts
      */
     patterns?: string | string[];
 }
@@ -119,7 +119,7 @@ export class DirectoryCatalog extends CatalogBase {
 
         if (!PATTERNS.length) {
             PATTERNS.push(
-                '*' + path.extname(__filename)
+                '*' + path.extname(process.mainModule.filename)
             );
         }
 
