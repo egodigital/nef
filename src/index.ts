@@ -40,6 +40,16 @@ export interface ComposablePartCatalog {
 }
 
 /**
+ * A disposable object.
+ */
+export interface Disposable {
+    /**
+     * Frees all resources of that object.
+     */
+    dispose(): any;
+}
+
+/**
  * An export defintion.
  */
 export interface ExportDefintion {
@@ -165,7 +175,7 @@ export function ImportMany(...args: any[]): any {
 /**
  * A container, that composes instances.
  */
-export class CompositionContainer {
+export class CompositionContainer implements Disposable {
     private readonly _CATALOGS: ComposablePartCatalog[] = [];
     private _instances: ExportInstance[] | symbol = VALUE_NOT_CREATED;
 
@@ -240,6 +250,26 @@ export class CompositionContainer {
         this.handleImportManys(obj);
 
         return this;
+    }
+
+    /** @inheritdoc */
+    public dispose() {
+        // dispose all instances
+
+        const INSTANCES = this._instances;
+        if (Array.isArray(INSTANCES)) {
+            while (INSTANCES.length) {
+                const I = INSTANCES.pop();
+
+                if (!_.isNil(I.instance)) {
+                    if (_.isFunction(I.instance.dispose)) {
+                        I.instance.dispose();
+                    }
+                }
+            }
+        }
+
+        this._instances = null;
     }
 
     private fillInstances(instances: any[], classes: any[]) {
