@@ -223,31 +223,29 @@ export class CompositionContainer implements Disposable {
     /**
      * Composes all @Export() instances.
      *
-     * @param {any} obj The object, where to write the instances to.
+     * @param {any[]} [objs] One or more object, where to write the instances to.
      */
-    public async compose(obj: any): Promise<void> {
+    public async compose(...objs: any[]): Promise<void> {
         // keep sure we already have an
         // initialized value in 'this._instances'
         await this.getGlobalExportInstances();
 
-        this.handleImports(obj);
-        this.handleImportManys(obj);
+        this.handleDecoratorsOfObjectList(objs);
     }
 
     /**
      * Composes all @Export() instances.
      *
-     * @param {any} obj The object, where to write the instances to.
+     *  @param {any[]} [objs] One or more object, where to write the instances to.
      * 
      * @return {this}
      */
-    public composeSync(obj: any): this {
+    public composeSync(...objs: any[]): this {
         // keep sure we already have an
         // initialized value in 'this._instances'
         this.getGlobalExportInstancesSync();
 
-        this.handleImports(obj);
-        this.handleImportManys(obj);
+        this.handleDecoratorsOfObjectList(objs);
 
         return this;
     }
@@ -437,6 +435,13 @@ export class CompositionContainer implements Disposable {
         }
 
         return MATCHING_EXPORTS[0].instance;
+    }
+
+    private handleDecoratorsOfObjectList(objects: any[]) {
+        objects.forEach(o => {
+            this.handleImports(o);
+            this.handleImportManys(o);
+        });
     }
 
     private handleImports(obj: any) {
