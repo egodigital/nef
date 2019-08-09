@@ -138,9 +138,8 @@ export class DirectoryCatalog extends CatalogBase {
                 true
             );
 
-            CLASS_LIST.push.apply(
-                CLASS_LIST,
-                getClassesFromObject(MODULE)
+            CLASS_LIST.push(
+                ...getClassesFromObject(MODULE)
             );
         });
 

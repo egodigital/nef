@@ -194,11 +194,12 @@ export class CompositionContainer implements Disposable {
             processes = [process];
         }
 
-        return this.addCatalogs
-            .apply(this, processes.filter(p => !_.isNil(p))
+        return this.addCatalogs(
+            ...processes.filter(p => !_.isNil(p))
                 .map(p => new ApplicationCatalog({
                     application: p,
-                })));
+                }))
+        );
     }
 
     /**
@@ -224,9 +225,10 @@ export class CompositionContainer implements Disposable {
      * @return {this}
      */
     public addClasses(...classes: any[]): this {
-        return this.addCatalogs
-            .apply(this, classes.filter(c => !_.isNil(c))
-                .map(c => new ClassCatalog(c)));
+        return this.addCatalogs(
+            ...classes.filter(c => !_.isNil(c))
+                .map(c => new ClassCatalog(c))
+        );
     }
 
     /**
@@ -237,10 +239,11 @@ export class CompositionContainer implements Disposable {
      * @return {this}
      */
     public addDirectories(...dirs: string[]): this {
-        return this.addCatalogs
-            .apply(this, dirs.map(d => toStringSafe(d))
+        return this.addCatalogs(
+            ...dirs.map(d => toStringSafe(d))
                 .filter(d => '' !== d.trim())
-                .map(d => new DirectoryCatalog(d)));
+                .map(d => new DirectoryCatalog(d))
+        );
     }
 
     /**
@@ -251,10 +254,11 @@ export class CompositionContainer implements Disposable {
      * @return {this}
      */
     public addFiles(...files: string[]): this {
-        return this.addCatalogs
-            .apply(this, files.map(f => toStringSafe(f))
+        return this.addCatalogs(
+            ...files.map(f => toStringSafe(f))
                 .filter(f => '' !== f.trim())
-                .map(f => new FileCatalog(f)));
+                .map(f => new FileCatalog(f))
+        );
     }
 
     /**
@@ -265,9 +269,10 @@ export class CompositionContainer implements Disposable {
      * @return {this}
      */
     public addModules(...mods: any[]): this {
-        return this.addCatalogs
-            .apply(this, mods.filter(m => !_.isNil(m))
-                .map(m => new ModuleCatalog(m)));
+        return this.addCatalogs(
+            ...mods.filter(m => !_.isNil(m))
+                .map(m => new ModuleCatalog(m))
+        );
     }
 
     /**

@@ -128,9 +128,8 @@ export class ApplicationCatalog extends CatalogBase {
                 true
             );
 
-            CLASS_LIST.push.apply(
-                CLASS_LIST,
-                getClassesFromObject(MODULE)
+            CLASS_LIST.push(
+                ...getClassesFromObject(MODULE)
             );
         });
 

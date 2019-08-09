@@ -60,8 +60,9 @@ function getClassesFromObjectInner(obj: any, alreadyHandled: any[]): any[] {
         if (_.isFunction(VALUE) && _.isFunction(VALUE.constructor)) {
             CLASS_LIST.push(VALUE);
         } else {
-            CLASS_LIST.push
-                .apply(CLASS_LIST, getClassesFromObjectInner(VALUE, alreadyHandled));
+            CLASS_LIST.push(
+                ...getClassesFromObjectInner(VALUE, alreadyHandled)
+            );
         }
     }
 
