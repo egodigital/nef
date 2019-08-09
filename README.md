@@ -187,3 +187,7 @@ container.addCatalogs(
 // shorter:
 // container.addModules(myModule);
 ```
+
+## Documentation
+
+The API documentation can be found [here](https://egodigital.github.io/nef/).
