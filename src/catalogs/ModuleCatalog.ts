@@ -20,7 +20,7 @@ import { CatalogBase } from './CatalogBase';
 import { getClassesFromObject } from '../util';
 
 /**
- * A catalog for a single class.
+ * A catalog for a JavaScript module.
  */
 export class ModuleCatalog extends CatalogBase {
     private readonly _MODULE: any;

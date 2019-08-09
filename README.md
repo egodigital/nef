@@ -98,3 +98,92 @@ container.composeSync(context);
 // hold an instance of 'MyService' class
 // managed by 'container'
 ```
+
+### Catalogs
+
+Catalogs helps to detect classes, which should be exported as services. 
+
+#### ApplicationCatalog
+
+A catalog based on one or more JavaScript modules one application.
+
+```typescript
+import { ApplicationCatalog, CompositionContainer } from '@egodigital/nef';
+
+let container = new CompositionContainer();
+container.addCatalogs(
+    new ApplicationCatalog(process)  // add current application
+);
+
+// shorter:
+// container.addApplications(process);
+```
+
+#### ClassCatalog
+
+A catalog for a single class.
+
+```typescript
+import { ClassCatalog, CompositionContainer, Export } from '@egodigital/nef';
+
+@Export()
+class MyService {
+}
+
+let container = new CompositionContainer();
+container.addCatalogs(
+    new ClassCatalog(MyService)
+);
+
+// shorter:
+// container.addClasses(MyService);
+```
+
+#### DirectoryCatalog
+
+A catalog based on one or more JavaScript modules in a directory.
+
+```typescript
+import { CompositionContainer, DirectoryCatalog } from '@egodigital/nef';
+
+let container = new CompositionContainer();
+container.addCatalogs(
+    new DirectoryCatalog('/path/to/directory')
+);
+
+// shorter:
+// container.addDirectories('/path/to/directory');
+```
+
+#### FileCatalog
+
+A catalog based on one or more JavaScript modules in a single file.
+
+```typescript
+import { CompositionContainer, FileCatalog } from '@egodigital/nef';
+
+let container = new CompositionContainer();
+container.addCatalogs(
+    new FileCatalog('/path/to/file.js')
+);
+
+// shorter:
+// container.addFiles('/path/to/file.js');
+```
+
+#### ModuleCatalog
+
+A catalog for a JavaScript module.
+
+```typescript
+import { CompositionContainer, ModuleCatalog } from '@egodigital/nef';
+const myModule = require('my-module');
+
+let container = new CompositionContainer();
+container.addCatalogs(
+    new ModuleCatalog(myModule)
+);
+
+// shorter:
+// container.addModules(myModule);
+```

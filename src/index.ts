@@ -18,6 +18,8 @@
 import * as _ from 'lodash';
 import { ApplicationCatalog } from './catalogs/ApplicationCatalog';
 import { ClassCatalog } from './catalogs/ClassCatalog';
+import { DirectoryCatalog } from './catalogs/DirectoryCatalog';
+import { FileCatalog } from './catalogs/FileCatalog';
 import { ModuleCatalog } from './catalogs/ModuleCatalog';
 import { asArray, toStringSafe } from './util';
 
@@ -225,6 +227,34 @@ export class CompositionContainer implements Disposable {
         return this.addCatalogs
             .apply(this, classes.filter(c => !_.isNil(c))
                 .map(c => new ClassCatalog(c)));
+    }
+
+    /**
+     * Adds one or more directories.
+     *
+     * @param {string[]} [dirs] The directories (paths) to add.
+     *
+     * @return {this}
+     */
+    public addDirectories(...dirs: string[]): this {
+        return this.addCatalogs
+            .apply(this, dirs.map(d => toStringSafe(d))
+                .filter(d => '' !== d.trim())
+                .map(d => new DirectoryCatalog(d)));
+    }
+
+    /**
+     * Adds one or more files.
+     *
+     * @param {string[]} [files] The files (paths) to add.
+     *
+     * @return {this}
+     */
+    public addFiles(...files: string[]): this {
+        return this.addCatalogs
+            .apply(this, files.map(f => toStringSafe(f))
+                .filter(f => '' !== f.trim())
+                .map(f => new FileCatalog(f)));
     }
 
     /**
