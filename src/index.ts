@@ -528,4 +528,5 @@ export * from './catalogs/ApplicationCatalog';
 export * from './catalogs/ClassCatalog';
 export * from './catalogs/DirectoryCatalog';
 export * from './catalogs/FileCatalog';
+export * from './catalogs/FilteredCatalog';
 export * from './catalogs/ModuleCatalog';
