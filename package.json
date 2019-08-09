@@ -1,6 +1,6 @@
 {
   "name": "@egodigital/nef",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Managed Extensibility Framework like library written for Node.js",
   "main": "lib/index.js",
   "private": false,
@@ -40,7 +40,7 @@
   },
   "homepage": "https://github.com/egodigital/nef#readme",
   "dependencies": {
-    "@types/node": "^10.14.12",
+    "@types/node": "^10.14.15",
     "fast-glob": "^3.0.4",
     "lodash": "^4.17.15"
   },

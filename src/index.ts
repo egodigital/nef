@@ -16,6 +16,7 @@
  */
 
 import * as _ from 'lodash';
+import { ApplicationCatalog } from './catalogs/ApplicationCatalog';
 import { ClassCatalog } from './catalogs/ClassCatalog';
 import { ModuleCatalog } from './catalogs/ModuleCatalog';
 import { asArray, toStringSafe } from './util';
@@ -178,6 +179,25 @@ export function ImportMany(...args: any[]): any {
 export class CompositionContainer implements Disposable {
     private readonly _CATALOGS: ComposablePartCatalog[] = [];
     private _instances: ExportInstance[] | symbol = VALUE_NOT_CREATED;
+
+    /**
+     * Adds one or more processes. If you process is defined, the current one is taken.
+     *
+     * @param {NodeJS.Process[]} [processes] One or more processes to add.
+     * 
+     * @return {this}
+     */
+    public addApplications(...processes: NodeJS.Process[]): this {
+        if (!processes.length) {
+            processes = [process];
+        }
+
+        return this.addCatalogs
+            .apply(this, processes.filter(p => !_.isNil(p))
+                .map(p => new ApplicationCatalog({
+                    application: p,
+                })));
+    }
 
     /**
      * Adds one or more catalogs.
@@ -469,6 +489,7 @@ export class CompositionContainer implements Disposable {
 }
 
 
+export * from './catalogs/ApplicationCatalog';
 export * from './catalogs/ClassCatalog';
 export * from './catalogs/DirectoryCatalog';
 export * from './catalogs/FileCatalog';
