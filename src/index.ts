@@ -410,7 +410,7 @@ export class CompositionContainer implements Disposable {
             this.fillInstances(instances, LOADED_CLASSES);
 
             this._instances = instances;
-            this.handleInstanceList(
+            this.handleDecoratorsOfObjectList(
                 instances.map(ei => ei.instance)
             );
         } else {
@@ -439,7 +439,7 @@ export class CompositionContainer implements Disposable {
             this.fillInstances(instances, LOADED_CLASSES);
 
             this._instances = instances;
-            this.handleInstanceList(
+            this.handleDecoratorsOfObjectList(
                 instances.map(ei => ei.instance)
             );
         } else {
@@ -499,14 +499,6 @@ export class CompositionContainer implements Disposable {
         });
     }
 
-    private handleImports(obj: any) {
-        const IMPORT_DEFS = asArray<ImportDefintion>(obj[IMPORTS]);
-
-        IMPORT_DEFS.forEach(id => {
-            obj[id.property] = this.getServiceInner(id.service);
-        });
-    }
-
     private handleImportManys(obj: any) {
         const IMPORT_DEFS = asArray<ImportDefintion>(obj[IMPORT_MANYS]);
 
@@ -515,10 +507,11 @@ export class CompositionContainer implements Disposable {
         });
     }
 
-    private handleInstanceList(instances: any[]) {
-        instances.forEach(i => {
-            this.handleImports(i);
-            this.handleImportManys(i);
+    private handleImports(obj: any) {
+        const IMPORT_DEFS = asArray<ImportDefintion>(obj[IMPORTS]);
+
+        IMPORT_DEFS.forEach(id => {
+            obj[id.property] = this.getServiceInner(id.service);
         });
     }
 }

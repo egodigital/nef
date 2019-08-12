@@ -2,5 +2,3 @@ doc/
 lib/
 node_modules/
 .DS_Store
-src/sandbox
-src/sandbox.ts

@@ -5,5 +5,4 @@ node_modules
 src
 tsconfig.json
 tslint.json
-src/sandbox
-src/sandbox.ts
+.DS_Store
