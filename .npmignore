@@ -6,3 +6,5 @@ src
 tsconfig.json
 tslint.json
 .DS_Store
+/.github
+/.vscode

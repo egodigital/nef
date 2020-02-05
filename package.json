@@ -1,6 +1,6 @@
 {
   "name": "@egodigital/nef",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Managed Extensibility Framework like library written for Node.js",
   "main": "lib/index.js",
   "private": false,
